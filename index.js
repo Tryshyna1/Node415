@@ -66,7 +66,7 @@ res.status(200).send(JSON.stringify(tickets));
 
 router.get('/ticket/:id', function (req, res) {
    //iterate to find the correct object
-   for( i = 0; i<myArray.length, i++; )
+   for( i = 0; i<myArray.length; i++)
   {
     if (myArray[i].id === req.params.id)
   {
