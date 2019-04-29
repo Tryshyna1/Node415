@@ -58,8 +58,8 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 //endpoint to list all tickets
-router.get('/list', function(req, res) {
-
+router.get('/', function(req, res) {
+res.redirect('/listTickets')
 res.status(200).send(JSON.stringify(tickets));
 });
 
