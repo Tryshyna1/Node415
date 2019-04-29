@@ -85,7 +85,7 @@ router.post('/ticket', function(req, res) {
     updated_at: req.body.updated_at,
     type: req.body.type,
     subject: req.body.subject,
-    description: req.body.description,
+    description: req.body.description
 
   };
   tickets.push(ticket);
