@@ -68,7 +68,7 @@ router.get('/ticket/:id', function (req, res) {
    //iterate to find the correct object
    for( i = 0; i<myArray.length; i++)
   {
-    if (myArray[i].id === req.params.id)
+    if (myArray[i].id == req.params.id)
   {
     ticket = myArray[i];
   }
