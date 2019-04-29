@@ -74,7 +74,7 @@ router.get('/ticket/:id', function (req, res) {
   }
 
   }
-  res.status(200).send(JSON.stringify(ticket));
+  res.status(200).send(JSON.stringify(tickets));
 
 });
 //Endpoint to post a new ticket
@@ -89,7 +89,7 @@ router.post('/ticket', function(req, res) {
 
   };
   tickets.push(ticket);
-  res.status(200).send(JSON.stringify(ticket));
+  res.status(200).send(JSON.stringify(tickets));
 });
 
 
