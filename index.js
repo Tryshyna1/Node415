@@ -5,7 +5,7 @@ var app = express();
 
 var port = process.env.PORT || 5000;
 var router = express.Router();
-var ticket = [
+var tickets = [
  { "id": 89776,
  "created_at": "2017-07-20T22:55:29Z",
  "updated_at": "2017-05-05T10:38:52Z",
@@ -69,8 +69,9 @@ router.get('/ticket/:id', function (req, res) {
    //iterate to find the correct object
    for( i = 0; i<myArray.length, i++; )
   {
-    if (myArray[i].id == req.params.id)
-  { ticket = myArray[i];
+    if (myArray[i].id === req.params.id)
+  {
+    ticket = myArray[i];
   }
 
   }
@@ -88,7 +89,7 @@ router.post('/ticket', function(req, res) {
     description: req.body.description,
 
   };
-  ticket.push(ticket);
+  tickets.push(ticket);
   res.status(200).send(JSON.stringify(ticket));
 });
 
