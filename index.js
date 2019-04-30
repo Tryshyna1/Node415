@@ -3,8 +3,7 @@ var express = require("express");
 var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
-
-var TICKETS_COLLECTION = db.getCollection("Tickets");
+var collection = db.getCollection("Tickets");
 
 var app = express();
 app.use(bodyParser.json());
@@ -20,8 +19,9 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://<dbuser>:<dbpa
   }
 
   // Save database object from the callback for reuse.
-  db = client.db();
+  db = client.db(heroku_7mpxzxxd);
   console.log("Database connection ready");
+
 
   var port = process.env.PORT || 5000;
   var router = express.Router();
@@ -45,7 +45,7 @@ function handleError(res, reason, message, code) {
  */
 
 router.get("/tickets", function(req, res) {
-  db.collection(TICKETS_COLLECTION).find({}).toArray(function(err, docs) {
+  db.collection("Tickets").find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get tickets.");
     } else {
