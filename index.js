@@ -1,124 +1,54 @@
 
-var express    = require('express');
-var bodyParser = require('body-parser');
-var app        = express();
+var express = require("express");
+var bodyParser = require("body-parser");
+var mongodb = require("mongodb");
+var ObjectID = mongodb.ObjectID;
 
+var TICKETS_COLLECTION = "tickets";
 
-
-
-// configure body parser
-app.use(bodyParser.urlencoded({ extended: true }));
+var app = express();
 app.use(bodyParser.json());
 
-var port     = process.env.PORT || 5000; // set our port
+// Create a database variable outside of the database connection callback to reuse the connection pool in your app.
+var db;
 
-// DATABASE SETUP
-var mongoose   = require('mongoose');
-mongoose.connect('mongodb://<dbuser>:<dbpassword>@ds331145.mlab.com:31145/heroku_7mpxzxxd'); // connect to our database
+// Connect to the database before starting the application server.
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://<dbuser>:<dbpassword>@ds331145.mlab.com:31145/heroku_7mpxzxxd", function (err, client) {
+  if (err) {
+    console.log(err);
+    process.exit(1);
+  }
 
-// Handle the connection event
-var db = mongoose.connection;
-db.on('error', console.error.bind(console, 'connection error:'));
+  // Save database object from the callback for reuse.
+  db = client.db();
+  console.log("Database connection ready");
 
-db.once('open', function() {
-  console.log("DB connection alive");
+  // Initialize the app.
+  var server = app.listen(process.env.PORT || 8080, function () {
+    var port = server.address().port;
+    console.log("App now running on port", port);
+  });
 });
 
-// Bear models lives here
-var Ticket     = require('./app/models/ticket');
+// CONTACTS API ROUTES BELOW
 
-// ROUTES FOR OUR API
-// =============================================================================
+// Generic error handler used by all endpoints.
+function handleError(res, reason, message, code) {
+  console.log("ERROR: " + reason);
+  res.status(code || 500).json({"error": message});
+}
 
-// create our router
-var router = express.Router();
+/*  "/api/contacts"
+ *    GET: finds all contacts
+ *    POST: creates a new contact
+ */
 
-// middleware to use for all requests
-router.use(function(req, res, next) {
-	// do logging
-	console.log('Something is happening.');
-	next();
+app.get("/api/tickets", function(req, res) {
+  db.collection(TICKETS_COLLECTION).find({}).toArray(function(err, docs) {
+    if (err) {
+      handleError(res, err.message, "Failed to get tickets.");
+    } else {
+      res.status(200).json(docs);
+    }
+  });
 });
-
-
-// on routes that end in /bears
-// ----------------------------------------------------
-router.route('/tickets')
-
-	// create a bear (accessed at POST http://localhost:8080/bears)
-	.post(function(req, res) {
-
-		var ticket = new Ticket();		// create a new instance of the Bear model
-		ticket.description = req.body.description;  // set the bears name (comes from the request)
-
-		ticket.save(function(err) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Ticket created!' });
-		});
-
-
-	})
-
-	// get all the bears (accessed at GET http://localhost:8080/api/bears)
-	.get(function(req, res) {
-		Ticket.find(function(err, ticket) {
-			if (err)
-				res.send(err);
-
-			res.json(tickets);
-		});
-	});
-
-// on routes that end in /bears/:bear_id
-// ----------------------------------------------------
-router.route('/tickets/:ticket_id')
-
-	// get the bear with that id
-	.get(function(req, res) {
-		Ticket.findById(req.params.ticket_id, function(err, ticket) {
-			if (err)
-				res.send(err);
-			res.json(ticket);
-		});
-	})
-
-	// update the bear with this id
-	.put(function(req, res) {
-		Ticket.findById(req.params.ticket_id, function(err, ticket) {
-
-			if (err)
-				res.send(err);
-
-			ticket.name = req.body.name;
-			ticket.save(function(err) {
-				if (err)
-					res.send(err);
-
-				res.json({ message: 'Ticket updated!' });
-			});
-
-		});
-	})
-
-	// delete the bear with this id
-	.delete(function(req, res) {
-		Ticket.remove({
-			_id: req.params.ticket_id
-		}, function(err, ticket) {
-			if (err)
-				res.send(err);
-
-			res.json({ message: 'Successfully deleted' });
-		});
-	});
-
-
-// REGISTER OUR ROUTES -------------------------------
-app.use('/api', router);
-
-// START THE SERVER
-// =============================================================================
-app.listen(port);
-console.log('Magic happens on port ' + port);
