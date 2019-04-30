@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
-var TICKETS_COLLECTION = db.getCollection("tickets");
+var TICKETS_COLLECTION = db.getCollection("Tickets");
 
 var app = express();
 app.use(bodyParser.json());
@@ -23,14 +23,15 @@ mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://<dbuser>:<dbpa
   db = client.db();
   console.log("Database connection ready");
 
-  // Initialize the app.
-  var server = app.listen(process.env.PORT || 8080, function () {
-    var port = server.address().port;
-    console.log("App now running on port", port);
-  });
-});
+  var port = process.env.PORT || 5000;
+  var router = express.Router();
 
-// CONTACTS API ROUTES BELOW
+  router.use(function(req, res, next) {
+      // do logging
+      console.log('Something is happening.');
+      next(); // make sure we go to the next routes and don't stop here
+  });
+
 
 // Generic error handler used by all endpoints.
 function handleError(res, reason, message, code) {
@@ -43,7 +44,7 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-app.get("/api/tickets", function(req, res) {
+router.get("/api/tickets", function(req, res) {
   db.collection(TICKETS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get tickets.");
@@ -52,3 +53,7 @@ app.get("/api/tickets", function(req, res) {
     }
   });
 });
+
+app.use('/api', router);
+app.listen(port);
+console.log('Magic happens on port ' + port);
