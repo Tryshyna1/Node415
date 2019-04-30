@@ -44,7 +44,7 @@ function handleError(res, reason, message, code) {
  *    POST: creates a new contact
  */
 
-router.get("/api/tickets", function(req, res) {
+router.get("/tickets", function(req, res) {
   db.collection(TICKETS_COLLECTION).find({}).toArray(function(err, docs) {
     if (err) {
       handleError(res, err.message, "Failed to get tickets.");
