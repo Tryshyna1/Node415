@@ -4,7 +4,7 @@ var bodyParser = require("body-parser");
 var mongodb = require("mongodb");
 var ObjectID = mongodb.ObjectID;
 
-var TICKETS_COLLECTION = "tickets";
+var TICKETS_COLLECTION = db.getCollection("tickets");
 
 var app = express();
 app.use(bodyParser.json());
