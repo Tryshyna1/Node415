@@ -45,6 +45,7 @@ router.post('/addTicket', function (req, res) {
    fs.readFile("tickets.json", function (err, data) {
       data = JSON.parse( data );
       data["ticket4"] = ticket["ticket4"];
+      data.push("ticket4");
       console.log( data );
       res.end( JSON.stringify(data));
    });
