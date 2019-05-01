@@ -12,14 +12,14 @@ app.use(bodyParser.json());
 var db;
 
 // Connect to the database before starting the application server.
-mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://heroku_7mpxzxxd:bit24dom7i6m7ksdmcc3f9o28v@ds331145.mlab.com:31145/heroku_7mpxzxxd", function (err, client) {
+mongodb.MongoClient.connect(process.env.MONGODB_URI || "mongodb://localhost:27017/Node415", function (err, client) {
   if (err) {
     console.log(err);
     process.exit(1);
   }
 
   // Save database object from the callback for reuse.
-  db = client.db(heroku_7mpxzxxd);
+  db = client.db("Tickets");
   console.log("Database connection ready");
 
 
